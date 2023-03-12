@@ -1,23 +1,10 @@
-from .pipeline import Pipeline, pipeline
-import tiktoken
-
-@pipeline
-def TiktokenTokenCounter(text: str, encoding_name: str = "cl100k_base") -> int:
-    """
-    Source: https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
-    cl100k_base for ChatGPT
-    p50k_base for code and davinci 2/3
-    r50k_base for davinci 1
-    """
-    encoding = tiktoken.get_encoding(encoding_name) # might be expensive
-    return len(encoding.encode(text))
-
-DEFAULT_SPLIT_ORDER = ["\n\n", "\n", ".", "?", "!", " "]
+from .token_counters import TiktokenTokenCounter
+from ..pipeline import Pipeline, pipeline
 
 @pipeline
 def RecursiveTextSplitter(
     text: str, 
-    splitters: list[str] = DEFAULT_SPLIT_ORDER, 
+    deliminators: list[str] = ["\n\n", "\n", ".", "?", "!", " "], 
     token_counter: Pipeline[str, int] = TiktokenTokenCounter(),
     max_tokens: int = 1024
 ) -> list[str]:
@@ -27,7 +14,7 @@ def RecursiveTextSplitter(
     """
     max_tokens -= 1 # for deliminators
     current_texts = [text]
-    for splitter in splitters:
+    for splitter in deliminators:
         next_texts = []
         did_split = False
         for current_text in current_texts:
@@ -53,6 +40,10 @@ def RecursiveTextSplitter(
         else:
             new_texts.append(current_text)
             last_text_size = token_counter(current_text)
+    for current_text in current_texts:
+        if token_counter(current_text) > max_tokens:
+            print(token_counter(current_text), max_tokens)
+            raise ValueError("Text is too long")
     while new_texts[-1] == "":
         new_texts.pop()
     return new_texts 

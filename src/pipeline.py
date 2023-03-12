@@ -1,9 +1,9 @@
 import functools
-from typing import Callable, Any, Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
-import openai
+from pydantic import BaseModel
 
-# Pipeline = Callable[[str, Any], str]
+# We need a preparation system for expensive operations
 
 InputType = TypeVar("InputType") # default to str in Python 3.12
 OutputType = TypeVar("OutputType") # default to str in Python 3.12
@@ -20,12 +20,18 @@ class Pipeline(Generic[InputType, OutputType]):
         return self.func(text, *self.args, **self.kwargs)
 
 # Add docstrings and stuff
-def chain(self, other: Pipeline[OutputType, OutputType]) -> Pipeline[InputType, OutputType]:
+def chain(self, other: Pipeline[InputType, OutputType]) -> Pipeline[InputType, OutputType]:
     """Chain two pipelines together."""
     return Pipeline(lambda text: other(self(text)))
 
 Pipeline.__rshift__ = chain
-Pipeline.__lshift__ = lambda self, other: other.__lshift__(self)
+Pipeline.__lshift__ = lambda self, other: chain(other, self)
+
+def pipe(self, other: Pipeline[OutputType, OutputType]) -> Pipeline[InputType, OutputType]:
+    """Pipe two pipelines together."""
+    return Pipeline(lambda text: map(other, self(text)))
+
+Pipeline.__or__ = pipe
 
 class PipelineFactory(Generic[InputType, OutputType]):
     def __init__(self, func: Callable[[InputType], OutputType]) -> None:
