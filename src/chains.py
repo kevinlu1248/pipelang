@@ -31,12 +31,13 @@ def MapReducePipeline(
 
 def MapReduceSummaryPipeline(
     prompt: LLMLike = PromptPipeline(template_path='src/prompts/summarize_langchain.txt'), 
-    llm: LLMLike = OpenAIPipeline(max_tokens=-1)
+    llm: LLMLike = OpenAIPipeline(max_tokens=-1),
+    joiner: JoinerLike = SimpleJoinerPipeline()
 ):
     summarize_pipeline = prompt >> llm
     return MapReducePipeline(
         summarize_pipeline,
-        SimpleJoinerPipeline() >> summarize_pipeline,
+        joiner >> summarize_pipeline,
     )
 
 def MapReduceQAPipeline(
@@ -46,9 +47,10 @@ def MapReduceQAPipeline(
     joiner_pipeline: LLMLike = SimpleJoinerPipeline(),
     llm: LLMLike = OpenAIPipeline(max_tokens=-1)
 ):
-    mapper = mapper_prompt.fill(question, "question").fill_pipeline("context") >> llm
-    reducer = joiner_pipeline >> reducer_prompt.fill(question, "question").fill_pipeline("summaries") >> llm
-    return MapReducePipeline(mapper, reducer)
+    return MapReducePipeline(
+        mapper_prompt.fill(question, "question").fill_pipeline("context") >> llm,
+        joiner_pipeline >> reducer_prompt.fill(question, "question").fill_pipeline("summaries") >> llm
+    )
 
 @pipeline
 def RefinePipeline(
