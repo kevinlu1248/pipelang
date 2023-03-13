@@ -25,7 +25,6 @@ def test_summary():
 
 def test_qa():
     text = requests.get("https://raw.githubusercontent.com/hwchase17/langchain/master/docs/modules/state_of_the_union.txt").text
-    # question = "What did the president say about Ketanji Brown Jackson?"
     question = "What did the president say about Justice Breyer?"
     pipeline = MapReduceQAPipeline(question)
     print(pipeline(text))

@@ -1,5 +1,35 @@
-# pipelang
-Pipelines for large language models. Features of langchain but with extensibility, versatility, and transparency and without the complexity.
+# pipelang (in progress / proof of concept)
+Pipelines for large language models. Features of langchain but with extensibility, versatility, and transparency and without the complexity using functional pipeline components.
+
+Write a quick map-reduce QA pipeline with clarity and transparency:
+
+```python
+from src.llms import OpenAIPipeline
+from src.prompts import Prompt
+from src.utils.joiners import SimpleJoinerPipeline
+from src.utils.splitters import RecursiveTextSplitter
+
+text = requests.get("https://raw.githubusercontent.com/hwchase17/langchain/master/docs/modules/state_of_the_union.txt").text
+question = "What did the president say about Justice Breyer?"
+
+mapper_prompt: Prompt = Prompt.from_file('src/prompts/map_reduce_qa/map_langchain.txt')
+reducer_prompt: Prompt = Prompt.from_file('src/prompts/map_reduce_qa/reduce_langchain.txt')
+
+mapper_prompt_pipeline = mapper_prompt.fill(question, "question").fill_pipeline("context")
+reducer_prompt_pipeline = reducer_prompt.fill(question, "question").fill_pipeline("summaries")
+
+map_reduce_pipeline = (RecursiveTextSplitter() | (mapper_prompt_pipeline >> OpenAIPipeline())) \
+    >> SimpleJoinerPipeline() >> reducer_prompt_pipeline >> OpenAIPipeline()
+print(map_reduce_pipeline(text))
+```
+
+Or simply use the built-in MapReduceQAPipeline:
+
+```python
+from src.chains import MapReduceQAPipeline
+
+map_reduce_pipeline = MapReduceQAPipeline(question)
+```
 
 Features:
 * Base Pipeline system

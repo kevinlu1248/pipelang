@@ -1,5 +1,5 @@
 import requests
-from src.splitters import RecursiveTextSplitter
+from utils.splitters import RecursiveTextSplitter
 
 def test_recursive_splitter():
     # text = "Test.\n\nTest."

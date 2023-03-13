@@ -10,7 +10,7 @@ from .utils.token_counters import TiktokenTokenCounter
 def OpenAIPipeline(
     text: str,
     model: str = "text-davinci-003",
-    max_tokens: int = 256, 
+    max_tokens: int = -1, 
     token_counter: Pipeline[str, int] | None = TiktokenTokenCounter(),
     **kwargs: Any
 ) -> str:
@@ -28,7 +28,7 @@ def OpenAIChatPipeline(
     text: str,
     initial_system_message: str = "You are a helpful assistant",
     model: str = "gpt-3.5-turbo",
-    max_tokens: int = 256, # make dynamic
+    max_tokens: int = -1, # make dynamic
     token_counter: Pipeline[str, int] | None = TiktokenTokenCounter(),
     **kwargs: Any
 ) -> str:
