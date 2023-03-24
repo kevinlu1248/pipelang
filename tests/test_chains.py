@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import openai
 import requests
 
-from src.llms import OpenAIPipeline
+from src.llms import OpenAIChatPipeline
 from src.prompts import PromptPipeline
 from src.chains import MapReduceQAPipeline, MapReduceSummaryPipeline
 
@@ -11,11 +11,11 @@ load_dotenv()
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 def test_prompt_insert_pipeline_simple():
-    simple_pipeline = PromptPipeline(template='Say "{text}"?') >> OpenAIPipeline(temperature=0)
+    simple_pipeline = PromptPipeline(template='Say "{text}"?') >> OpenAIChatPipeline(temperature=0)
     assert simple_pipeline("Hello world!").strip() == "Hello world!"
 
 def test_prompt_insert_pipeline():
-    simple_pipeline = PromptPipeline(template='Why developers print "{text}"?') >> OpenAIPipeline()
+    simple_pipeline = PromptPipeline(template='Why do developers print "{text}"?') >> OpenAIChatPipeline()
     print(simple_pipeline("Hello world!"))
 
 def test_summary():
