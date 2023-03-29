@@ -5,7 +5,7 @@ Ever try out Langchain and love the features and how everything works out of the
 
 For the full story, check out "Story".
 
-## Installation
+## Installation (doesn't work yet)
 
 Install with 
 ```python
