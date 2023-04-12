@@ -1,9 +1,7 @@
 # pipelang (in progress / proof of concept)
-Pipelines for large language models. Langchain wrapper for for extensibility, versatility, and transparency and without the complexity using functional components.
+Pipelines for large language models. Langchain wrapper for extensibility, versatility, and transparency and without the complexity using functional components.
 
-Ever try out Langchain and love the features and how everything works out of the box but simply find that there is little room for extensibility, and find it really difficult to modify? Ever wonder how to modify the prompts for a map-reduce QA pipeline? Well that's how I felt and why I built Pipelang.
-
-For the full story, check out "Story".
+Ever try out Langchain and love the features and how everything works out of the box but find it a bit difficult to extend? Ever wonder how to modify the prompts for a map-reduce QA pipeline? That's why I built Pipelang.
 
 ## Installation (doesn't work yet)
 
@@ -14,7 +12,7 @@ pip install pipelang
 
 ## Quickstart 
 
-Write a quick map-reduce QA pipeline with clarity and transparency:
+Write a quick map-reduce QA pipeline with clarity and transparency: (currently broken, will fix when I get the chance)
 
 ```python
 from src.llms import OpenAIPipeline
