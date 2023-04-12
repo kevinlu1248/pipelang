@@ -55,7 +55,6 @@ Future:
 * Flowchart generation / Computation graph
 * Pipeline factories
 * Tracing
-* Making langchain an optional dependency
 
 Attributions:
 * Langchain, which taught me a lot on modern techniques in working with LLM's such as chains and agents, as well as the framework
